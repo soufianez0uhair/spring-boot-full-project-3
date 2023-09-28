@@ -27,16 +27,24 @@ class UserControllerTest {
     // add the exception's message
     @Test
     public void givenNullFirstName_whenRegisterUser_thenThrowMethodArgumentNotValidException() throws Exception {
-        RegistrationRequest request = new RegistrationRequest("", "Zouhair", "soufianezouhaironline@gmail.com", "0614671572", "Pass@123", "STUDENT");
+        RegistrationRequest request = RegistrationRequest.builder()
+                .firstName("")
+                .lastName("Zouhair")
+                .email("soufianezouhaironline@gmail.com")
+                .phoneNumber("+212614671572")
+                .password("Pass@123")
+                .role("TEACHER")
+                .build();
         User user = new User(request.getFirstName(), request.getLastName(), request.getEmail(), request.getPhoneNumber(), request.getPassword());
-        user.addRole(new Role("STUDENT"));
+        user.addRole(new Role("TEACHER"));
         given(UserService.registerUser(request)).willReturn(new RegistrationResponse("dcjndjcndjcndj", roles));
 
         mockMvc.perform(post("/api/account")
                 .contentType(MediaType.APPLICATION_JSON))
                 .content(JsonConverter.convertToJson(request))
                 .andExpect(result ->
-                        assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));
+                        assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
+                .andExpect(result -> assertEquals("First name is required.", result.getResolvedException().getMessage()));;
     }
     }
 }
