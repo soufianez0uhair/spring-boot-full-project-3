@@ -1,2 +1,8 @@
-package com.example.springbootfullproject.service;public class UserService {
+package com.example.springbootfullproject.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
 }
