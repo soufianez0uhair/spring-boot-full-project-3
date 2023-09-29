@@ -13,6 +13,7 @@ public class RegistrationRequest {
     private final String firstName;
     @NotEmpty(message = "Last name is required.")
     private final String lastName;
+    @NotEmpty(message = "Email is required.")
     private final String email;
     private final String phoneNumber;
     private final String password;
