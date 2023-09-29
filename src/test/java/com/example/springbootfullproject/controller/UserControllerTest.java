@@ -2,6 +2,7 @@ package com.example.springbootfullproject.controller;
 
 import com.example.springbootfullproject.dto.RegistrationRequest;
 import com.example.springbootfullproject.service.UserService;
+import com.example.springbootfullproject.utils.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,17 +43,14 @@ class UserControllerTest {
                 .firstName("")
                 .lastName("Zouhair")
                 .email("soufianezouhaironline@gmail.com")
-                .phoneNumber("+212614671572")
+                .phoneNumber("+212600000000")
                 .password("Pass@123")
                 .role("TEACHER")
                 .build();
 
-        ObjectMapper objectMapper = new ObjectMapper(); // Create an ObjectMapper
-        String requestJson = objectMapper.writeValueAsString(request); // Serialize the object to JSON
-
         mockMvc.perform(post("/api/v1/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
+                        .content(JsonUtils.serializeToJson(request))
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(result -> {
 
@@ -69,6 +67,5 @@ class UserControllerTest {
                                         }
                                     }
                                 });
-
     }
 }
