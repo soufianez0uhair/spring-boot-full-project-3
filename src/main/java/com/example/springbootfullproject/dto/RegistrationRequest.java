@@ -1,6 +1,7 @@
 package com.example.springbootfullproject.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class RegistrationRequest {
 
-    @NotBlank(message = "First name is required.")
+    @NotEmpty(message = "First name is required.")
     private final String firstName;
     private final String lastName;
     private final String email;
