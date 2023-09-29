@@ -37,7 +37,7 @@ class UserControllerTest {
 
     // add the exception's message
     @Test
-    public void givenNullFirstName_whenRegisterUser_thenThrowMethodArgumentNotValidException() throws Exception {
+    public void givenEmptyFirstName_whenRegisterUser_thenThrowMethodArgumentNotValidException() throws Exception {
 
         RegistrationRequest request = RegistrationRequest.builder()
                 .firstName("")
