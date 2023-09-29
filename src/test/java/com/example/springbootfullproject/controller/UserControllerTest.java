@@ -165,4 +165,39 @@ class UserControllerTest {
                     }
                 });
     }
+
+    @Test
+    public void givenEmailIsEmpty_whenRegisterUser_thenThrowMethodArgumentNotValidException() throws Exception {
+
+        RegistrationRequest request = RegistrationRequest.builder()
+                .firstName("test")
+                .lastName("test")
+                .email("")
+                .phoneNumber("+212600000000")
+                .password("Pass@123")
+                .role("TEACHER")
+                .build();
+
+        mockMvc.perform(
+                        post("/api/v1/user/register")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(JsonUtils.serializeToJson(request))
+                            .accept(MediaType.APPLICATION_JSON)
+                        )
+                        .andExpect(result -> {
+                                    assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+
+                                    MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
+                                    List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+
+                                    assertThat(fieldErrors, hasSize(greaterThanOrEqualTo(1))
+                                    );
+                    // Assert the specific field error(s) and their messages
+                    for (FieldError fieldError : fieldErrors) {
+                        if ("email".equals(fieldError.getField())) {
+                            assertEquals("Email is required.", fieldError.getDefaultMessage());
+                        }
+                    }
+                });
+    }
 }
