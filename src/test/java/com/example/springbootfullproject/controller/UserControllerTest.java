@@ -264,7 +264,41 @@ class UserControllerTest {
                     // Assert the specific field error(s) and their messages
                     for (FieldError fieldError : fieldErrors) {
                         if ("phoneNumber".equals(fieldError.getField())) {
-                            assertEquals("Phone Number is required.", fieldError.getDefaultMessage());
+                            assertEquals("Phone number is required.", fieldError.getDefaultMessage());
+                        }
+                    }
+                });
+    }
+
+    @Test
+    public void givenPhoneNumberIsNull_whenRegisterUser_thenThrowMethodArgumentNotValidException() throws Exception {
+
+        RegistrationRequest request = RegistrationRequest.builder()
+                .firstName("test")
+                .lastName("test")
+                .email("test@soufianezouhair.com")
+                .password("Pass@123")
+                .role("TEACHER")
+                .build();
+
+        mockMvc.perform(
+                        post("/api/v1/user/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtils.serializeToJson(request))
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(result -> {
+                    assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+
+                    MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
+                    List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+
+                    assertThat(fieldErrors, hasSize(greaterThanOrEqualTo(1))
+                    );
+                    // Assert the specific field error(s) and their messages
+                    for (FieldError fieldError : fieldErrors) {
+                        if ("phoneNumber".equals(fieldError.getField())) {
+                            assertEquals("Phone number is required.", fieldError.getDefaultMessage());
                         }
                     }
                 });
