@@ -338,4 +338,38 @@ class UserControllerTest {
                     }
                 });
     }
+
+    @Test
+    public void givenPasswordIsNull_whenRegisterUser_thenThrowMethodArgumentNotValidException() throws Exception {
+
+        RegistrationRequest request = RegistrationRequest.builder()
+                .firstName("test")
+                .lastName("test")
+                .email("test@soufianezouhair.com")
+                .phoneNumber("+212600000000")
+                .role("TEACHER")
+                .build();
+
+        mockMvc.perform(
+                        post("/api/v1/user/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtils.serializeToJson(request))
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(result -> {
+                    assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
+
+                    MethodArgumentNotValidException ex = (MethodArgumentNotValidException) result.getResolvedException();
+                    List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+
+                    assertThat(fieldErrors, hasSize(greaterThanOrEqualTo(1))
+                    );
+                    // Assert the specific field error(s) and their messages
+                    for (FieldError fieldError : fieldErrors) {
+                        if ("password".equals(fieldError.getField())) {
+                            assertEquals("Password is required.", fieldError.getDefaultMessage());
+                        }
+                    }
+                });
+    }
 }
